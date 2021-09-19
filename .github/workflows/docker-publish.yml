@@ -41,3 +41,4 @@ jobs:
           build-args: |
             BUILD_DATE=${{ steps.prep.outputs.builddate }}
             REVISION=${{ steps.prep.outputs.revision }}
+            EVOSC_VERSION=${{ steps.prep.outputs.version }}
