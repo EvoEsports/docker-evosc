@@ -5,11 +5,12 @@ ARG EVOSC_GIT="https://github.com/EvoTM/EvoSC.git"
 ARG EVOSC_BRANCH="develop"
 ARG BUILD_DATE
 ARG REVISION
+ARG EVOSC_VERSION
 
 # labels
 LABEL org.opencontainers.image.title="EvoSC Trackmania/ManiaPlanet Server Controller" \
       org.opencontainers.image.description="Server Controller for Trackmania and ManiaPlanet servers." \
-      #org.opencontainers.image.version=${EVOSC_VERSION} \
+      org.opencontainers.image.version=${EVOSC_VERSION} \
       org.opencontainers.image.created=${BUILD_DATE} \
       org.opencontainers.image.authors="Nicolas Graf <nicolas.j.graf@gmail.com>" \
       org.opencontainers.image.vendor="Evo" \
@@ -33,6 +34,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # install php extensions
 RUN docker-php-ext-configure gd --with-jpeg && docker-php-ext-install gd && \
     docker-php-ext-install curl mysqli pdo_mysql zip pcntl
+
+# increase default memory limit
+RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
 
 # install evosc
 RUN git clone --branch ${EVOSC_BRANCH} ${EVOSC_GIT} /controller && \
