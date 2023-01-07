@@ -9,7 +9,6 @@ if [ "$2" = 'esc' -a "$(id -u)" = '0' ]; then
 fi
 
 if [ "$2" = 'esc' ]; then
-    [ ! -f /controller/config/evosc.config.json ] && cp /controller/config/default/evosc.config.json /controller/config/evosc.config.json
 	[ ! -f /controller/config/theme.config.json ] && cp /controller/config/default/theme.config.json /controller/config/theme.config.json
 	[ ! -f /controller/config/database.config.json ] && cp /controller/config/default/database.config.json /controller/config/database.config.json
 	[ ! -f /controller/config/server.config.json ] && cp /controller/config/default/server.config.json /controller/config/server.config.json
