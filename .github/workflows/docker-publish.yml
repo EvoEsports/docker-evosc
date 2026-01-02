@@ -1,44 +1,43 @@
-name: Docker Publish
+name: Publish Release to Docker Hub
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*.*.*'
 
 jobs:
-  push:
+  build-and-push:
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Prepare
-        id: prep
+      - name: Prepare Environment
+        id: env
         run: |
-          DOCKER_IMAGE=evotm/evosc
+          DOCKER_IMAGE=evoesports/evosc
           VERSION=${GITHUB_REF#refs/tags/}
           TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:latest"
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=builddate::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
           echo ::set-output name=revision::$(git rev-parse --short HEAD)
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1 
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v2
+      
+      - name: Build and push
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.env.outputs.tags }}
           build-args: |
-            BUILD_DATE=${{ steps.prep.outputs.builddate }}
-            REVISION=${{ steps.prep.outputs.revision }}
-            EVOSC_VERSION=${{ steps.prep.outputs.version }}
+            BUILD_DATE=${{ steps.env.outputs.builddate }}
+            REVISION=${{ steps.env.outputs.revision }}
+            EVOSC_VERSION=${{ steps.env.outputs.version }}
