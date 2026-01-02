@@ -1,7 +1,7 @@
 FROM php:7.4-cli-alpine
 
 # environment variables
-ARG EVOSC_GIT="https://github.com/EvoTM/EvoSC.git"
+ARG EVOSC_GIT="https://github.com/EvoEsports/EvoSC.git"
 ARG EVOSC_BRANCH="develop"
 ARG BUILD_DATE
 ARG REVISION
