@@ -1,8 +1,7 @@
 name: Publish Release to Docker Hub
 on:
-  push:
-    tags:
-      - '*.*.*'
+  release:
+    types: [published]
 
 jobs:
   build-and-push:
